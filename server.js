@@ -62,6 +62,12 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
+app.get('/api/exercise/users', (req, res) => {
+  User.find({}, ['_id', 'username'], (err, data) => {
+    res.json(data);
+  });
+});
+
 app.post('/api/exercise/new-user', (req, res) => {
   const userName = req.body.username;
 

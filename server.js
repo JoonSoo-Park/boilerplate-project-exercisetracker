@@ -21,11 +21,12 @@ mongoose.connect(process.env.MONGO_URI, {
 const logSchema = new mongoose.Schema({
   description: String,
   duration: Number,
-  date: {type: Date, default: Date.now}
+  date: {type: Date, default: Date.now},
 });
 
 const userSchema = new mongoose.Schema({
   username: String,
+  count: Number,
   log: []
 });
 
@@ -100,8 +101,9 @@ app.post('/api/exercise/add', (req, res) => {
 });
 
 app.get('/api/exercise/log', (req, res) => {
-  User.findById(req.query.userId, (error, result) => {
+  User.findById(req.query.userId, {'log._id': 0}, (error, result) => {
     if (!error) {
+
       let responseObject = result;
 
       if (req.query.from || req.query.to) {
@@ -132,6 +134,7 @@ app.get('/api/exercise/log', (req, res) => {
       responseObject['count'] = result.log.length;
       res.json(responseObject);
     }
+
   });
 });
 

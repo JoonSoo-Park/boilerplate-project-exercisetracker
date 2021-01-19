@@ -26,7 +26,7 @@ const logSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   username: String,
-  log: [logSchema]
+  log: []
 });
 
 const User = new mongoose.model("User", userSchema);
@@ -101,9 +101,16 @@ app.post('/api/exercise/add', (req, res) => {
 
 app.get('/api/exercise/log', (req, res) => {
   const query = req.query;
-  User.findOne({_id: query.userId}, (err, data) => {
+  User.findOne({_id: query.userId}, {'log._id': 0}, (err, data) => {
     // data["log"].sort({date: 'asc'});
-    res.json({res: data["log"]});
+    const l = data["log"];
+    console.log(l);
+    res.json({
+      _id: data["_id"],
+      username: data["username"],
+      count: data["log"].length,
+      log: data["log"]
+    });
   });
 });
 
